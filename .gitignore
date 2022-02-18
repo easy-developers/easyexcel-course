@@ -7,7 +7,7 @@
 **/.class
 **/.classpath
 **/.project
-*/target/
+*/target/LICENSE
 target/
 *.ipr
 *.iws
