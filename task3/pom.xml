@@ -9,7 +9,13 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>job1</artifactId>
+    <artifactId>task3</artifactId>
+    <packaging>jar</packaging>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.alibaba.easyexcel.course</groupId>
+            <artifactId>base</artifactId>
+        </dependency>
+    </dependencies>
 </project>
