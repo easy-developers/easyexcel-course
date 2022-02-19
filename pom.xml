@@ -23,6 +23,20 @@
         <module>task3</module>
     </modules>
 
+    <!-- 使用阿里云的包依赖 提高效率 -->
+    <repositories>
+        <repository>
+            <id>aliyun-nexus</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <!-- 本项目的包 -->
