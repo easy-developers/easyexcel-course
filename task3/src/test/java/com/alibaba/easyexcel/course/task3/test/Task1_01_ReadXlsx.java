@@ -18,14 +18,14 @@ import org.junit.Test;
  * @author Jiaju Zhuang
  */
 @Slf4j
-public class Task01ReadXlsx {
+public class Task1_01_ReadXlsx {
 
     @Test
     public void readXlsx() throws Exception {
         // 需要解析的xlsx文件
         String fileName = FileUtils.getPath() + "product.xlsx";
         // 用来临时存储解压缩目录
-        String tempOutFilePath = FileUtils.getPath() + "productTemp";
+        String tempOutFilePath = FileUtils.getPath() + "productTemp/";
 
         try {
             //解压缩文件
@@ -53,7 +53,7 @@ public class Task01ReadXlsx {
         // sst 根目录
         // sst -> si 代表一条文件数据
         // sst -> si -> t 代表存储的文本信息
-        String sharedStringsFile = tempOutFilePath + "/xl/sharedStrings.xml";
+        String sharedStringsFile = tempOutFilePath + "xl/sharedStrings.xml";
         SAXReader reader = new SAXReader();
         File file = new File(sharedStringsFile);
         Document document = reader.read(file);
@@ -82,7 +82,7 @@ public class Task01ReadXlsx {
         // worksheet -> sheetData -> row -> c 代表个单元格，里面的 r 标签代表所在列 ，标签 t="s"
         // 代表当前单元并没有存储数据，真正数据存储在xl/sharedStrings.xml里面
         // worksheet -> sheetData -> row -> c —> v 存储具体数据
-        String sheet1File = tempOutFilePath + "/xl/worksheets/sheet1.xml";
+        String sheet1File = tempOutFilePath + "xl/worksheets/sheet1.xml";
         SAXReader reader = new SAXReader();
         File file = new File(sheet1File);
         Document document = reader.read(file);
