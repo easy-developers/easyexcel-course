@@ -46,6 +46,11 @@
                 <artifactId>base</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>org.alibaba.easyexcel.course</groupId>
+                <artifactId>task3</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
             <!-- 引入最新版easyexcel -->
             <dependency>
@@ -108,6 +113,15 @@
                 <artifactId>fastjson</artifactId>
                 <version>1.2.79</version>
             </dependency>
+
+            <!-- poi apache的专业读取excel的软件 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>4.1.2</version>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
 

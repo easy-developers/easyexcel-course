@@ -1,11 +1,11 @@
-package com.alibaba.easyexcel.course.task3.test;
+package com.alibaba.easyexcel.course.task4.test;
 
 import java.lang.reflect.Field;
 import java.util.Date;
 
+import com.alibaba.easyexcel.course.base.model.Demo;
+import com.alibaba.easyexcel.course.base.model.Demo2;
 import com.alibaba.easyexcel.course.base.utils.FileUtils;
-import com.alibaba.easyexcel.course.task3.Demo;
-import com.alibaba.easyexcel.course.task3.Demo2;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
@@ -146,6 +146,8 @@ public class Task3_02_Cglib {
         demo.setString("字符串1");
         demo.setDate(new Date());
         demo.setInteger(1);
+
+
         BeanMap beanMap = BeanMap.create(demo);
         for (Object key : beanMap.keySet()) {
             Object data = beanMap.get(key);

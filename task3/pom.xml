@@ -9,7 +9,7 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>task4</artifactId>
+    <artifactId>task3</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

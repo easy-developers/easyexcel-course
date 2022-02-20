@@ -103,6 +103,23 @@ public class FileUtils {
     }
 
     /**
+     * 将数据写入到一个文件
+     *
+     * @param fileName 需要写如到的文件¬
+     */
+    public static BufferedWriter buildWriter(String fileName)
+        throws Exception {
+        File file = new File(fileName);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        return new BufferedWriter(new FileWriter(file));
+    }
+
+    /**
      * 压缩文件
      *
      * @param out

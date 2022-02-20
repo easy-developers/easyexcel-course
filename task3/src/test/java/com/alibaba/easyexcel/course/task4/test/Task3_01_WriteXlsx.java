@@ -1,4 +1,4 @@
-package com.alibaba.easyexcel.course.task3.test;
+package com.alibaba.easyexcel.course.task4.test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,14 +16,14 @@ import org.junit.Test;
  * @author Jiaju Zhuang
  */
 @Slf4j
-public class Task4_01_WriteXlsx {
+public class Task3_01_WriteXlsx {
 
     @Test
     public void writeXlsx() throws Exception {
         // 需要生成的xls文件
-        String fileName = FileUtils.getPath() + "product" + System.currentTimeMillis() + ".xlsx";
+        String fileName = FileUtils.getPath() + "demo" + System.currentTimeMillis() + ".xlsx";
         // 用来临时生成xml的文件
-        String tempOutFilePath = FileUtils.getPath() + "write/excelTemp" + System.currentTimeMillis() + "/";
+        String tempOutFilePath = FileUtils.getPath() + "write/demo" + System.currentTimeMillis() + "/";
         try {
             // 基础信息写入 excel 真正要运行会有很多基础文件 这里我们不一一解析 代码已经写好
             // 很我们还是关注 xl/worksheets/sheet1.xml
@@ -32,6 +32,7 @@ public class Task4_01_WriteXlsx {
             // 往我们第一个sheet里面写入数据
             writeSheet1(tempOutFilePath);
 
+            // 将临时文件夹压缩成xlsx文件
             FileUtils.zip(fileName, tempOutFilePath);
         } finally {
             // 删除文件要写到 finally
@@ -55,8 +56,7 @@ public class Task4_01_WriteXlsx {
                 + "fitToPage=\"false\" autoPageBreaks=\"false\"/></sheetPr><dimension "
                 + "ref=\"A1\"/><sheetViews><sheetView "
                 + "workbookViewId=\"0\"></sheetView></sheetViews><sheetFormatPr defaultRowHeight=\"15"
-                + ".0\"/><cols><col min=\"1\" max=\"1\" width=\"3.42578125\" customWidth=\"true\" "
-                + "bestFit=\"true\"/></cols>");
+                + ".0\"/>");
             writer.append("<sheetData>");
 
             // 行号

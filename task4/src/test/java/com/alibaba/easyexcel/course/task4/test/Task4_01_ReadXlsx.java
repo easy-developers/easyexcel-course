@@ -1,4 +1,4 @@
-package com.alibaba.easyexcel.course.task3.test;
+package com.alibaba.easyexcel.course.task4.test;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Jiaju Zhuang
  */
 @Slf4j
-public class Task3_01_ReadXlsx {
+public class Task4_01_ReadXlsx {
 
     @Test
     public void readXlsx() throws Exception {
