@@ -6,7 +6,7 @@ package com.alibaba.easyexcel.course.base.utils;
  * @param <T>
  */
 @FunctionalInterface
-interface ConsumerThrowsException<T> {
+public interface ConsumerThrowsException<T> {
 
     void accept(T t) throws Exception;
 }

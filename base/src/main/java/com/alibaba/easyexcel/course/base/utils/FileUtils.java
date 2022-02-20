@@ -74,6 +74,9 @@ public class FileUtils {
     public static void writeStringToFile(String fileName, ConsumerThrowsException<BufferedWriter> writer)
         throws Exception {
         File file = new File(fileName);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -106,17 +109,15 @@ public class FileUtils {
      */
     private static void compress(OpcZipOutputStream out, File input, String name)
         throws IOException {
-        if (name == null) {
-            name = input.getName();
-        }
         if (input.isDirectory()) {
             File[] flist = input.listFiles();
-            if (flist == null || flist.length == 0) {
-                out.putNextEntry(new ZipEntry(name + "/"));
-                out.closeEntry();
-            } else {
+            if (flist != null && flist.length != 0) {
                 for (File file : flist) {
-                    compress(out, file, name + "/" + file.getName());
+                    String fileName = file.getName();
+                    if (name != null) {
+                        fileName = name + fileName;
+                    }
+                    compress(out, file, fileName);
                 }
             }
         } else {
