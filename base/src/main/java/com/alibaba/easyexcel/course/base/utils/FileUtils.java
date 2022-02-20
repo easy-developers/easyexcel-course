@@ -34,7 +34,7 @@ public class FileUtils {
     }
 
     /**
-     * 解压缩一个文件
+     * 将一个zip文件 解压缩到指定目录
      *
      * @param zipFileName 需要解压缩的文件
      * @param outputPath  输出路径
@@ -53,6 +53,7 @@ public class FileUtils {
                     targetFile.getParentFile().mkdirs();
                 }
                 targetFile.createNewFile();
+                //log.info("解压缩文件:{}", targetFile.getAbsolutePath());
                 try (InputStream is = zipFile.getInputStream(entry);
                      FileOutputStream fos = new FileOutputStream(targetFile)) {
                     int len;
@@ -62,6 +63,22 @@ public class FileUtils {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 将一个文件夹 压缩成一个zip文件
+     * 本方法主要用于 将一个文件夹打包成一个excel
+     * 这里注意，虽然excel实际上就是一个zip包，但是压缩的时候还是和普通的zip包还有一些差异，具体差异可以参考：https://github.com/rzymek/opczip
+     *
+     * @param zipFileName 需要压缩的文件
+     * @param inputPath   需要压缩的路径
+     */
+    public static void zip(String zipFileName, String inputPath) throws IOException {
+        try (OpcZipOutputStream out = new OpcZipOutputStream(new FileOutputStream(zipFileName))) {
+            File input = new File(inputPath);
+            compress(out, input, null);
+            out.finish();
         }
     }
 
@@ -82,20 +99,6 @@ public class FileUtils {
         }
         try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
             writer.accept(out);
-        }
-    }
-
-    /**
-     * 压缩一个文件
-     *
-     * @param zipFileName 需要压缩的文件
-     * @param inputPath   需要压缩的路径
-     */
-    public static void zip(String zipFileName, String inputPath) throws IOException {
-        try (OpcZipOutputStream out = new OpcZipOutputStream(new FileOutputStream(zipFileName))) {
-            File input = new File(inputPath);
-            compress(out, input, null);
-            out.finish();
         }
     }
 
