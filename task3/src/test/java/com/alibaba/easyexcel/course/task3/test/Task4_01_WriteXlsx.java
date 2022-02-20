@@ -1,6 +1,11 @@
 package com.alibaba.easyexcel.course.task3.test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.alibaba.easyexcel.course.base.utils.DateUtils;
 import com.alibaba.easyexcel.course.base.utils.FileUtils;
+import com.alibaba.easyexcel.course.base.utils.PositionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -24,6 +29,7 @@ public class Task4_01_WriteXlsx {
             // 很我们还是关注 xl/worksheets/sheet1.xml
             writeBase(tempOutFilePath);
 
+            // 往我们第一个sheet里面写入数据
             writeSheet1(tempOutFilePath);
 
             FileUtils.zip(fileName, tempOutFilePath);
@@ -43,18 +49,25 @@ public class Task4_01_WriteXlsx {
     private void writeSheet1(String tempOutFilePath) throws Exception {
         //  xl/worksheets/sheet1.xml
         FileUtils.writeStringToFile(tempOutFilePath + "xl/worksheets/sheet1.xml", writer -> {
-            writer.append(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><worksheet xmlns=\"http://schemas.openxmlformats"
-                    + ".org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats"
-                    + ".org/officeDocument/2006/relationships\"><sheetPr filterMode=\"false\"><pageSetUpPr "
-                    + "fitToPage=\"false\" autoPageBreaks=\"false\"/></sheetPr><dimension "
-                    + "ref=\"A1\"/><sheetViews><sheetView "
-                    + "workbookViewId=\"0\"></sheetView></sheetViews><sheetFormatPr defaultRowHeight=\"15"
-                    + ".0\"/><cols><col min=\"1\" max=\"1\" width=\"3.42578125\" customWidth=\"true\" "
-                    + "bestFit=\"true\"/></cols>");
+            writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><worksheet xmlns=\"http://schemas.openxmlformats"
+                + ".org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats"
+                + ".org/officeDocument/2006/relationships\"><sheetPr filterMode=\"false\"><pageSetUpPr "
+                + "fitToPage=\"false\" autoPageBreaks=\"false\"/></sheetPr><dimension "
+                + "ref=\"A1\"/><sheetViews><sheetView "
+                + "workbookViewId=\"0\"></sheetView></sheetViews><sheetFormatPr defaultRowHeight=\"15"
+                + ".0\"/><cols><col min=\"1\" max=\"1\" width=\"3.42578125\" customWidth=\"true\" "
+                + "bestFit=\"true\"/></cols>");
             writer.append("<sheetData>");
 
-            writer.append("<row r=\"1\"><c r=\"A1\" t=\"str\"><v>张三</v></c></row>");
+            // 行号
+            // 写入头数据
+            writer.append(buildRow(0, "string", "date", "integer"));
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            // 写入1-10行数据
+            for (int i = 1; i <= 10; i++) {
+                writer.append(buildRow(i, "标题" + i, simpleDateFormat.parse("2022-01-" + i), i));
+            }
 
             writer.append("</sheetData>");
             writer.append(
@@ -62,26 +75,68 @@ public class Task4_01_WriteXlsx {
                     + " bottom=\"0.75\" header=\"0.3\" footer=\"0.3\"/><pageSetup paperSize=\"9\" "
                     + "orientation=\"portrait\" horizontalDpi=\"0\" verticalDpi=\"0\"/></worksheet>");
         });
+    }
 
+    private String buildRow(int rowIndex, Object... objs) {
+        StringBuilder row = new StringBuilder();
+        row.append("<row r=\"").append(rowIndex + 1).append("\">");
+
+        // 列号
+        int columnIndex = 0;
+        for (Object obj : objs) {
+            row.append(buildCell(rowIndex, columnIndex++, obj));
+        }
+
+        row.append("</row>");
+        return row.toString();
+    }
+
+    private String buildCell(int rowIndex, int column, Object data) {
+        StringBuilder cell = new StringBuilder();
+        cell.append("<c r=\"").append(PositionUtils.position(rowIndex, column)).append("\" ");
+
+        if (data == null) {
+            cell.append("></c>");
+            return cell.toString();
+        }
+        Class<?> clazz = data.getClass();
+        if (clazz == String.class) {
+            // string 2种情况
+            // 1. <c r="A1" t="s"> 这种情况下 v标签只放索引， 具体值在sharedStrings.xml
+            // 2. <c r="A1" t="str"> 这中情况下值 直接放在v标签下面
+            // 为了简单 我们直接用第二种
+            cell.append("t=\"str\"><v>");
+            cell.append(data);
+        } else if (clazz == Date.class) {
+            // 日期  <c r="A2" s="1">
+            // s="1" 代表设置为1号样式 在style.xml 写了1是日期格式
+            cell.append("s=\"1\"><v>");
+            cell.append(DateUtils.convertToExcelDate((Date)data));
+        } else if (clazz == Integer.class) {
+            // 数字 <c r="A3">
+            cell.append("><v>");
+            cell.append(data);
+        } else {
+            throw new IllegalArgumentException("当前还不支持字段类型" + clazz);
+        }
+        cell.append("</v></c>");
+        return cell.toString();
     }
 
     private void writeBase(String tempOutFilePath) throws Exception {
         //  [Content_Types].xml
         FileUtils.writeStringToFile(tempOutFilePath + "[Content_Types].xml", writer -> {
-            writer.append(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas"
-                    + ".openxmlformats.org/package/2006/content-types\"><Default Extension=\"rels\" "
-                    + "ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/><Default "
-                    + "Extension=\"xml\" ContentType=\"application/xml\"/>");
-            writer.append(
-                "<Override PartName=\"/xl/sharedStrings.xml\" ContentType=\"application/vnd"
-                    + ".openxmlformats-officedocument.spreadsheetml.sharedStrings+xml\"/><Override "
-                    + "PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument"
-                    + ".spreadsheetml.styles+xml\"/><Override PartName=\"/xl/workbook.xml\" "
-                    + "ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>");
-            writer.append(
-                "<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd"
-                    + ".openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
+            writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas"
+                + ".openxmlformats.org/package/2006/content-types\"><Default Extension=\"rels\" "
+                + "ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/><Default "
+                + "Extension=\"xml\" ContentType=\"application/xml\"/>");
+            writer.append("<Override PartName=\"/xl/sharedStrings.xml\" ContentType=\"application/vnd"
+                + ".openxmlformats-officedocument.spreadsheetml.sharedStrings+xml\"/><Override "
+                + "PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument"
+                + ".spreadsheetml.styles+xml\"/><Override PartName=\"/xl/workbook.xml\" "
+                + "ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>");
+            writer.append("<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd"
+                + ".openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
 
             writer.append(
                 "<Override PartName=\"/docProps/core.xml\" ContentType=\"application/vnd.openxmlformats-package"
@@ -116,9 +171,9 @@ public class Task4_01_WriteXlsx {
                 + ".xml\"/></Relationships>"));
 
         // xl/workbook.xml
-        FileUtils.writeStringToFile(tempOutFilePath + "xl/workbook.xml",
-            writer -> writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" "
+        FileUtils.writeStringToFile(tempOutFilePath + "xl/workbook.xml", writer -> writer.append(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" "
                 + "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><workbookPr "
                 + "date1904=\"false\"/><bookViews><workbookView /></bookViews><sheets><sheet name=\"Sheet1\" "
                 + "r:id=\"rId3\" sheetId=\"1\"/></sheets></workbook>"));
@@ -144,8 +199,10 @@ public class Task4_01_WriteXlsx {
                 + "patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill></fills><borders "
                 + "count=\"1\"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs "
                 + "count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs><cellXfs "
-                + "count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" "
-                + "xfId=\"0\"/></cellXfs><dxfs count=\"0\"></dxfs></styleSheet>");
+                + "count=\"2\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"><alignment "
+                + "vertical=\"center\"/></xf><xf numFmtId=\"14\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" "
+                + "applyNumberFormat=\"1\"><alignment vertical=\"center\"/></xf></cellXfs><dxfs "
+                + "count=\"0\"></dxfs></styleSheet>");
         });
 
         // xl/sharedStrings.xml

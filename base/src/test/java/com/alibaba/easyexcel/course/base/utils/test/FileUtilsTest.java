@@ -45,7 +45,7 @@ public class FileUtilsTest {
 
     @Test
     public void zip3() throws Exception {
-        String pathdd = "/Users/zhuangjiaju/Downloads/tet3/excelTemp1645341070311";
+        String pathdd = "/Users/zhuangjiaju/Downloads/tt3/simple1645357506052";
         List<String> paths = Arrays.asList(
             "[Content_Types].xml",
             "_rels/.rels",
@@ -57,7 +57,7 @@ public class FileUtilsTest {
             "xl/worksheets/sheet1.xml"
         );
         try (OpcZipOutputStream out = new OpcZipOutputStream(
-            new FileOutputStream("/Users/zhuangjiaju/Downloads/tet3/rrr" + System.currentTimeMillis() + ".xlsx"))) {
+            new FileOutputStream("/Users/zhuangjiaju/Downloads/tt3/nn" + System.currentTimeMillis() + ".xlsx"))) {
             for (String path : paths) {
                 out.putNextEntry(new ZipEntry(path));
                 Files.copy(Paths.get(pathdd, path), out);

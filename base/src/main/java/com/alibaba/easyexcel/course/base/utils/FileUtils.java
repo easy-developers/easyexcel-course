@@ -118,7 +118,7 @@ public class FileUtils {
                 for (File file : flist) {
                     String fileName = file.getName();
                     if (name != null) {
-                        fileName = name + fileName;
+                        fileName = name + "/" + fileName;
                     }
                     compress(out, file, fileName);
                 }

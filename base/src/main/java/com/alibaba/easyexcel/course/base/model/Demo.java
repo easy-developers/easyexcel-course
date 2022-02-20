@@ -1,14 +1,14 @@
-package com.alibaba.easyexcel.course.task3;
+package com.alibaba.easyexcel.course.base.model;
 
 import java.util.Date;
 
 import lombok.Data;
 
 /**
- * demo2对象
+ * demo对象
  */
 @Data
-public class Demo2 {
+public class Demo {
     /**
      * 字符串
      */

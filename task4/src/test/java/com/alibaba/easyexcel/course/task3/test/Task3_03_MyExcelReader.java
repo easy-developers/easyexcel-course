@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.alibaba.easyexcel.course.base.model.Demo;
 import com.alibaba.easyexcel.course.base.utils.DateUtils;
 import com.alibaba.easyexcel.course.base.utils.FileUtils;
-import com.alibaba.easyexcel.course.task3.Demo;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.beans.BeanMap;
@@ -209,7 +209,7 @@ public class Task3_03_MyExcelReader {
             if (fieldType == String.class) {
                 return value;
             } else if (fieldType == Date.class) {
-                return DateUtils.convertToDate(value);
+                return DateUtils.convertToJavaDate(value);
             } else if (fieldType == Integer.class) {
                 return Integer.valueOf(value);
             } else {
