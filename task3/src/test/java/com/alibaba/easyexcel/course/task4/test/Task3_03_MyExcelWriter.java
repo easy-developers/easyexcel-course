@@ -70,7 +70,7 @@ public class Task3_03_MyExcelWriter {
      * 使用poi的XSSFWorkbook 来输出一个xlsx,可以参照官方文档：https://poi.apache.org/components/spreadsheet/quick-guide.html
      * 或者 自己搜索 poi XSSFWorkbook 写入
      * 需要完成：
-     * 1. 写入10W行25列数据，25列数据格式为： 字符串_(行号)_(列号)
+     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时
      * 2. 设置运行内存为128M -Xmx128M  再次运行 导出，不会设置的同学可以搜索： idea(如果其实其他编辑器，则搜索对应的编辑器) junit 设置最大内存
      *
      * @throws Exception
@@ -112,7 +112,7 @@ public class Task3_03_MyExcelWriter {
      * 使用poi的SXSSFWorkbook 来输出一个xlsx,可以参照官方文档：https://poi.apache.org/components/spreadsheet/quick-guide.html
      * 或者 自己搜索 poi SXSSFWorkbook 写入
      * 需要完成：
-     * 1. 写入10W行25列数据，25列数据格式为： 字符串_(行号)_(列号)
+     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时
      * 2. 设置运行内存为128M -Xmx128M  再次运行 导出
      *
      * @throws Exception
@@ -155,7 +155,7 @@ public class Task3_03_MyExcelWriter {
      * 任务说明：
      * 用于对比poi，直接参照：write 第一个测试案例来输出，写入的对象 直接用LargeData即可
      * 需要完成：
-     * 1. 写入10W行25列数据，25列数据格式为： 字符串_(行号)_(列号)
+     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时
      * 2. 设置运行内存为128M -Xmx128M  再次运行 导出
      * 3. 用128M 内存导出100W数据
      *
@@ -163,6 +163,7 @@ public class Task3_03_MyExcelWriter {
      */
     @Test
     public void myExcelWriterLargeWrite() throws Exception {
+        // TODO
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 正常运行 耗时几乎不变
         // 3. 用128M 导出100W 数据

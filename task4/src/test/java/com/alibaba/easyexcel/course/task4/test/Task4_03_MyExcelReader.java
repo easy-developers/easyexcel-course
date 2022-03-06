@@ -28,7 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 
 /**
- * 任务目标： 读取中xlsx中的信息
+ * 封装一个MyExcelReader
  *
  * @author Jiaju Zhuang
  */
@@ -36,8 +36,12 @@ import org.junit.Test;
 public class Task4_03_MyExcelReader {
 
     /**
-     * 了解反射
-     * 书写一个
+     * ●基于前面的代码手写一个MyExcelReader工具类
+     * 任务说明：
+     * 我已经会了如果读取一个xlsx以，结合前面写的时候需要用一个对象去写，来完成一个我们自己的excel读取的工具类：MyExcelReader
+     * 需要完成：
+     * 1. MyExcelReaderImpl.readSharedStrings 读取readSharedStrings
+     * 2. MyExcelReaderImpl.readSheet1 读取sheet 并回调给 consumer
      *
      * @throws Exception
      */
@@ -57,6 +61,12 @@ public class Task4_03_MyExcelReader {
 
     /**
      * 用poi 读取一个大文件
+     * 任务说明：
+     * 使用poi的XSSFWorkbook 来读取一个xlsx,可以参照官方文档：https://poi.apache.org/components/spreadsheet/quick-guide.html
+     * 或者 自己搜索 poi XSSFWorkbook 读取
+     * 需要完成：
+     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时，然后读取这个excel, 并记录耗时，这里注意需要模拟每隔100条，清空数据，和我们的MyExcelReader一致
+     * 2. 设置运行内存为128M -Xmx128M ，会发现内存溢出了，因为poi读取是在内存中
      *
      * @throws Exception
      */
@@ -66,7 +76,6 @@ public class Task4_03_MyExcelReader {
         // 2. 设置最大运行内存为128M -Xmx128M 直接报错
 
         // 复制写的代码过来
-
         // 最大行数
         int maxColumn = 10 * 10000;
         int logLine = maxColumn / 10;
@@ -93,7 +102,7 @@ public class Task4_03_MyExcelReader {
         workbook.close();
         log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
 
-        //  读取excel poi读 xlsx 读值有HSSF一个模式
+        //  读取excel poi读 xlsx 读值有XSSF一个模式
         start = System.currentTimeMillis();
         XSSFWorkbook readWorkbook = new XSSFWorkbook(fileName);
         XSSFSheet readSheet = readWorkbook.getSheetAt(0);
@@ -123,7 +132,13 @@ public class Task4_03_MyExcelReader {
     }
 
     /**
-     * 用MyExcelReader 读取一个大文件
+     * 用MyExcelWriter 读取一个大文件
+     * 任务说明：
+     * 用于对比poi，直接参照：read 第一个测试案例来输出，写入的对象 直接用LargeData即可
+     * 需要完成：
+     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时, 然后读取这个数据
+     * 2. 设置运行内存为128M -Xmx128M  再次运行
+     * 3. 用128M 内存导出100W数据
      *
      * @throws Exception
      */
@@ -131,6 +146,7 @@ public class Task4_03_MyExcelReader {
     public void myExcelReaderLargeRead() throws Exception {
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M -Xmx128M 正常运行
+        // 3. 修改行数为100W 查看结果
 
         // 复制写的代码过来
         // 最大行数
@@ -172,7 +188,14 @@ public class Task4_03_MyExcelReader {
     }
 
     /**
-     * 用MyExcelReader 读取一个大文件
+     * 用MyExcelWriterSax 读取一个大文件
+     * 任务说明：
+     * 由于dom4j读取sheet1.xml 还是在内存里面，在遇到100W量级的数据还是会OOM，这个时候我们需要引入：SAXParserFactory 这个会一行一行的读取 xml中的数据
+     * 需要完成：
+     * 1. 由于sax读取相对比较复杂，所以不再让大家书写了。请阅读 并理解 MyExcelReaderSaxImpl 的代码
+     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时, 然后读取这个数据
+     * 2. 设置运行内存为128M -Xmx128M  再次运行
+     * 3. 用128M 内存导出并读取100W数据
      *
      * @throws Exception
      */
@@ -180,6 +203,7 @@ public class Task4_03_MyExcelReader {
     public void myExcelReaderSaxLargeRead() throws Exception {
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M -Xmx128M 正常运行
+        // 3. 用128M 内存导出并读取100W数据
 
         // 复制写的代码过来
         // 最大行数

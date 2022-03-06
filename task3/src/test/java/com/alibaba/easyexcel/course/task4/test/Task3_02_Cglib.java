@@ -114,7 +114,7 @@ public class Task3_02_Cglib {
     }
 
     /**
-     * ● 对比反射和cglib的性能
+     * 对比反射和cglib的性能
      * 任务说明：生成1000W 个 Demo，确保里面的 string date integer 都是不一样的值，然后通过反射 以及 cglib 2个种方法实现，对比他们2个的性能
      * 需要完成：
      * 1. 完成反射读取对象中的值

@@ -26,6 +26,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * sax 读取
+ *
+ * @param <T>
+ * @author Jiaju Zhuang
+ */
 @Slf4j
 public class MyExcelReaderSaxImpl<T> implements MyExcelReader<T> {
 
@@ -50,6 +56,7 @@ public class MyExcelReaderSaxImpl<T> implements MyExcelReader<T> {
                 .collect(Collectors.toList());
 
             // 解析 xl/sharedStrings.xml
+            // 这里数据量不会很大 所以 暂时不用sax读取了
             List<String> sharedStringList = readSharedStrings(tempOutFilePath);
 
             // 解析xl/worksheets/sheet1.xml
@@ -72,10 +79,12 @@ public class MyExcelReaderSaxImpl<T> implements MyExcelReader<T> {
     private List<String> readSharedStrings(String tempOutFilePath) throws Exception {
         List<String> sharedStringList = new ArrayList<>();
         // 解析 xl/sharedStrings.xml
+        String sharedStringsFile = tempOutFilePath + "xl/sharedStrings.xml";
+        // sharedStrings 差不多是这样子的一个格式 <sst><si><t>string</t></si><si><t>date</t></si></sst>
         // sst 根目录
         // sst -> si 代表一条文件数据
         // sst -> si -> t 代表存储的文本信息
-        String sharedStringsFile = tempOutFilePath + "xl/sharedStrings.xml";
+        // 也可以自己解压：demoWithSharedStrings.xlsx来看具体的信息
         SAXReader reader = new SAXReader();
         File file = new File(sharedStringsFile);
         Document document = reader.read(file);
@@ -161,6 +170,14 @@ public class MyExcelReaderSaxImpl<T> implements MyExcelReader<T> {
             dataList = new ArrayList<>();
         }
 
+        /**
+         * 读到 任何一个 Element 的开始的时候 会回调这个方法
+         *
+         * @param uri
+         * @param localName
+         * @param name
+         * @param attributes
+         */
         @Override
         public void startElement(String uri, String localName, String name, Attributes attributes) {
             if ("row".equals(name)) {
@@ -192,6 +209,13 @@ public class MyExcelReaderSaxImpl<T> implements MyExcelReader<T> {
             }
         }
 
+        /**
+         * 读到 任何一个 Element 的介绍的时候 会回调这个方法
+         *
+         * @param uri
+         * @param localName
+         * @param name
+         */
         @Override
         public void endElement(String uri, String localName, String name) {
             if ("row".equals(name)) {
@@ -215,6 +239,13 @@ public class MyExcelReaderSaxImpl<T> implements MyExcelReader<T> {
             }
         }
 
+        /**
+         * Element有数据的时候 会回调这个方法
+         *
+         * @param ch
+         * @param start
+         * @param length
+         */
         @Override
         public void characters(char[] ch, int start, int length) {
             currentString.append(ch, start, length);

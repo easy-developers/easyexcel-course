@@ -3,11 +3,13 @@ package com.alibaba.easyexcel.course.base.model;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * demo对象
  */
 @Data
+@ToString
 public class Demo {
     /**
      * 字符串

@@ -18,6 +18,12 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+/**
+ * 读取excel的工具
+ *
+ * @param <T>
+ * @author Jiaju Zhuang
+ */
 @Slf4j
 public class MyExcelReaderImpl<T> implements MyExcelReader<T> {
 
@@ -41,10 +47,10 @@ public class MyExcelReaderImpl<T> implements MyExcelReader<T> {
             List<Field> fieldList = Arrays.stream(clazz.getDeclaredFields())
                 .collect(Collectors.toList());
 
-            // 解析 xl/sharedStrings.xml
+            // TODO 解析 xl/sharedStrings.xml
             List<String> sharedStringList = readSharedStrings(tempOutFilePath);
 
-            // 解析xl/worksheets/sheet1.xml
+            // TODO 解析xl/worksheets/sheet1.xml
             readSheet1(tempOutFilePath, sharedStringList, clazz, fieldList, consumer);
 
         } catch (Exception e) {
@@ -64,10 +70,15 @@ public class MyExcelReaderImpl<T> implements MyExcelReader<T> {
     private List<String> readSharedStrings(String tempOutFilePath) throws Exception {
         List<String> sharedStringList = new ArrayList<>();
         // 解析 xl/sharedStrings.xml
+        String sharedStringsFile = tempOutFilePath + "xl/sharedStrings.xml";
+        // sharedStrings 差不多是这样子的一个格式 <sst><si><t>string</t></si><si><t>date</t></si></sst>
         // sst 根目录
         // sst -> si 代表一条文件数据
         // sst -> si -> t 代表存储的文本信息
-        String sharedStringsFile = tempOutFilePath + "xl/sharedStrings.xml";
+        // 也可以自己解压：demoWithSharedStrings.xlsx来看具体的信息
+        // 类似于上面的结构 要解析成这样子的一个数组 ["string","date"]
+        // TODO 用 dom4j 解析 xl/sharedStrings.xml
+        //不会使用dom4j的同学 可以 搜索： dom4j 解析xml
         SAXReader reader = new SAXReader();
         File file = new File(sharedStringsFile);
         Document document = reader.read(file);
@@ -96,8 +107,14 @@ public class MyExcelReaderImpl<T> implements MyExcelReader<T> {
         // worksheet -> sheetData 存储了所有数据信息
         // worksheet -> sheetData -> row 代表一行数据
         // worksheet -> sheetData -> row -> c 代表个单元格，里面的 r 标签代表所在列 ，标签 t="s"
-        // 代表当前单元并没有存储数据，真正数据存储在xl/sharedStrings.xml里面
+        // 代表当前单元并没有存储数据，真正数据存储在xl/sharedStrings.xml里面，只要将 v 标签中的素读取到，然后转成int ,然后 去sharedStringList 读取指定的index的数据即可
         // worksheet -> sheetData -> row -> c —> v 存储具体数据
+        // 不会 同学可以打开： 解压缩的 xl/worksheets/sheet1.xml   并格式化一下的内容
+        // TODO 用 dom4j 解析xl/worksheets/sheet1.xml 并封装成 T 对象后 回调给consumer.accept
+        // 需要注意 在写入到对应的实体的时候： 需要根据不同的字段类型来转换 目前只要支持： string integer date即可 其中日期可以调用：DateUtils.convertToJavaDate
+        // 将一个数字转成日期
+        // 默认数据到达100条以后 ，回调：consumer.accept 给用户去处理数据，防止内存存储太多数据
+
         String sheet1File = tempOutFilePath + "xl/worksheets/sheet1.xml";
         SAXReader reader = new SAXReader();
         File file = new File(sheet1File);
