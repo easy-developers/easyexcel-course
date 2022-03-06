@@ -50,7 +50,7 @@ public class Task3_01_WriteXlsx {
             // 删除文件要写到 finally
             FileUtils.delete(tempOutFilePath);
         }
-
+        log.info("生成xlsx完成：{}", fileName);
     }
 
     /**
@@ -74,6 +74,23 @@ public class Task3_01_WriteXlsx {
 
             // 写入头数据
             // TODO 写入标题头 数据
+            // 使用  writer.append拼接 这么一个字符串 <row r="1"><c r="A1" t="str"><v>string</v></c><c r="B1"
+            // t="str"><v>date</v></c><c
+            // r="C1" t="str"><v>integer</v></c></row>
+            // 其中 row标签中的 r="1"  1代表排序 第几行
+            // c 标签中的 r="A1" A 代表第几列 excel用A 表示第一列 B 表示第二列 以此类推  后面的1 表示 当前第几行 ,这里的转换有兴趣的同学
+            // 可以自己实现一个，入参是行号和列号，出参是 A1之类的拼接完成的，当然也可以直接使用：PositionUtils.position
+            // c 标签中的 t="str" 代表 这是一个字符串
+            // 这里觉得模模糊糊的同学可以解压缩 demo.xlsx ，然后打开sheet1.xml 并 格式化后看看看是怎么样子的
+            // 到这里完成后建议先运行下代码，看看生成的是否可以用office软件打开，如果不可以打开，或者提示需要修复之类的 需要解压后打开：sheet1.xml  看下生成的是否与demo里面的一致
+
+            // TODO 写入内容数据
+            // 使用  writer.append 拼接 第一行数据：<row r="2"><c r="A2" t="str"><v>标题1</v></c><c r="B2" s="1"><v>44562
+            // .0</v></c><c r="C2" ><v>1</v></c></row>
+            // 和标题中已经一致的数据不再重复讲述，重点关注日期和数字的那一列
+            // 日期： c 标签 需要传入 s="1" 实际上就是取style的index=1 的格式 ，然后日期转换成v标签的值已经写好方法：DateUtils.convertToExcelDate
+            // 数字： c 标签 不要额外的 参数
+            // 接下来依次类推 拼接 第二行 第三行的数据，当然 我们这里最好要使用for循环去处理
 
             writer.append(buildRow(0, "string", "date", "integer"));
 

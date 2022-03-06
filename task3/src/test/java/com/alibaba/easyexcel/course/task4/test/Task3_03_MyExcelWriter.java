@@ -24,16 +24,26 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 
 /**
- * 任务目标： 读取中xlsx中的信息
+ * 封装一个MyExcelWriter
  *
  * @author Jiaju Zhuang
  */
 @Slf4j
 public class Task3_03_MyExcelWriter {
 
+    /**
+     * 基于前面的代码手写一个MyExcelWriter工具类
+     * 任务说明：
+     * 我已经会了如果导出一个xlsx以及如何通过cglib来反射读取到一个对象成员变量以及值，这个时候 我们可以结合这2个知识点，来完成一个我们自己的excel导出的工具类：MyExcelWriter
+     * 需要完成：
+     * 1. MyExcelWriterImpl里面 根据 fieldList的数据 写入头数数据
+     * 2. MyExcelWriterImpl.write 方法
+     *
+     * @throws Exception
+     */
     @Test
     public void write() throws Exception {
-        // 用tray with resource 自动关闭 MyExcelWriter
+        // 因为我们 的 MyExcelWriter 实现了AutoCloseable， 所以可以用 tray with resource 来自动关闭 MyExcelWriter
         try (MyExcelWriter<Demo> myExcelWriter = new MyExcelWriterImpl<>(
             FileUtils.getPath() + "write/demo" + System.currentTimeMillis() + ".xlsx", Demo.class)) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -56,11 +66,18 @@ public class Task3_03_MyExcelWriter {
 
     /**
      * 用poi 使用XSSFWorkbook 输出一个大文件
+     * 任务说明：
+     * 使用poi的XSSFWorkbook 来输出一个xlsx,可以参照官方文档：https://poi.apache.org/components/spreadsheet/quick-guide.html
+     * 或者 自己搜索 poi XSSFWorkbook 写入
+     * 需要完成：
+     * 1. 写入10W行25列数据，25列数据格式为： 字符串_(行号)_(列号)
+     * 2. 设置运行内存为128M -Xmx128M  再次运行 导出，不会设置的同学可以搜索： idea(如果其实其他编辑器，则搜索对应的编辑器) junit 设置最大内存
      *
      * @throws Exception
      */
     @Test
     public void poiHssfLargeWrite() throws Exception {
+        // TODO
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 直接抛异常
 
@@ -90,12 +107,19 @@ public class Task3_03_MyExcelWriter {
     }
 
     /**
-     * 用poi 使用XSSFWorkbook 输出一个大文件
+     * 用poi 使用SXSSFWorkbook 输出一个大文件
+     * 任务说明：
+     * 使用poi的SXSSFWorkbook 来输出一个xlsx,可以参照官方文档：https://poi.apache.org/components/spreadsheet/quick-guide.html
+     * 或者 自己搜索 poi SXSSFWorkbook 写入
+     * 需要完成：
+     * 1. 写入10W行25列数据，25列数据格式为： 字符串_(行号)_(列号)
+     * 2. 设置运行内存为128M -Xmx128M  再次运行 导出
      *
      * @throws Exception
      */
     @Test
     public void poiSxssfLargeWrite() throws Exception {
+        // TODO
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 正常运行 耗时几乎不变
 
@@ -128,6 +152,12 @@ public class Task3_03_MyExcelWriter {
 
     /**
      * 用MyExcelWriter 输出一个大文件
+     * 任务说明：
+     * 用于对比poi，直接参照：write 第一个测试案例来输出，写入的对象 直接用LargeData即可
+     * 需要完成：
+     * 1. 写入10W行25列数据，25列数据格式为： 字符串_(行号)_(列号)
+     * 2. 设置运行内存为128M -Xmx128M  再次运行 导出
+     * 3. 用128M 内存导出100W数据
      *
      * @throws Exception
      */
@@ -135,6 +165,7 @@ public class Task3_03_MyExcelWriter {
     public void myExcelWriterLargeWrite() throws Exception {
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 正常运行 耗时几乎不变
+        // 3. 用128M 导出100W 数据
 
         // 最大行数
         int maxColumn = 10 * 10000;

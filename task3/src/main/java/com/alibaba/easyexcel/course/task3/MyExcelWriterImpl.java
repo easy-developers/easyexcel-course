@@ -13,6 +13,11 @@ import com.alibaba.easyexcel.course.base.utils.PositionUtils;
 
 import net.sf.cglib.beans.BeanMap;
 
+/**
+ * excel writer 实现
+ *
+ * @param <T>
+ */
 public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
 
     /**
@@ -23,16 +28,16 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
     /**
      * 输出的文件地址
      */
-    private String file;
+    private final String file;
     /**
      * clazz的字段
      */
-    private List<Field> fieldList;
+    private final List<Field> fieldList;
 
     /**
      * 生成临时文件的地址
      */
-    private String tempOutFilePath;
+    private final String tempOutFilePath;
     /**
      * 用于写sheet1文件
      */
@@ -53,6 +58,7 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
         // 很我们还是关注 xl/worksheets/sheet1.xml
         writeBase();
 
+        // TODO 完成
         // 写入在写入行数据之前的数据
         writeSheet1BeforeRowData();
     }
@@ -75,7 +81,9 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
             + ".0\"/>");
         sheet1Writer.append("<sheetData>");
 
-        // 行号
+        // TODO 读取 fieldList的数据 写入头数数据
+        // 需要写入的为：<row r="1"><c r="A1" t="str"><v>string</v></c><c r="B1" t="str"><v>date</v></c><c r="C1"
+        // t="str"><v>integer</v></c></row>
         // 写入头数据
         sheet1Writer.append(buildRow(fieldList.stream()
             .map(Field::getName)
@@ -235,6 +243,14 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
 
     @Override
     public void write(List<T> dataList) throws Exception {
+        // TODO 使用cglib 反射读取对象
+        // 循环 fieldList 里面的字段 来读取 beanmap中的值
+        // 关于c 标签的类型 只需要支持文本、日期、以及数字即可
+        // 这里 列出第一列的数据 <row r="2"><c r="A2" t="str"><v>标题1</v></c><c r="B2" s="1"><v>44562
+        // .0</v></c><c r="C2" ><v>1</v></c></row>
+        // 这里要注意 需要支持写入无数航
+        // 将数据写入到 sheet1Writer.append
+
         if (dataList == null || dataList.isEmpty()) {
             return;
         }
@@ -260,7 +276,6 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
             // 删除临时文件地址
             FileUtils.delete(tempOutFilePath);
         }
-
     }
 
     @Override
