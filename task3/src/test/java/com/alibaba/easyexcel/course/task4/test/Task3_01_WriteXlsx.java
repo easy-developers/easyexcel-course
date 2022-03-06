@@ -11,13 +11,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 /**
- * 任务目标： 读取中xlsx中的信息
+ * 手动生成一个xlsx文件
  *
  * @author Jiaju Zhuang
  */
 @Slf4j
 public class Task3_01_WriteXlsx {
 
+    /**
+     * 写一个xlsx的文件
+     * 任务说明：前面我们说过 xlsx实际上是一堆xml文件打成的一个zip包，所以这里需要把所有的xml都准备完成，然后打包。
+     * 由于很多xml不需要我们记，所以我这里以writeBase方法来准备好了，包括最后压缩成的zip包，我这里也直接写完了。
+     * 需要完成：
+     * 1. 完成writeSheet1方法
+     * 2. 写入头部数据
+     * 3. 写入内容数据
+     *
+     * @throws Exception
+     */
     @Test
     public void writeXlsx() throws Exception {
         // 需要生成的xls文件
@@ -30,6 +41,7 @@ public class Task3_01_WriteXlsx {
             writeBase(tempOutFilePath);
 
             // 往我们第一个sheet里面写入数据
+            // TODO 这里需要我们去实现
             writeSheet1(tempOutFilePath);
 
             // 将临时文件夹压缩成xlsx文件
@@ -49,6 +61,7 @@ public class Task3_01_WriteXlsx {
      */
     private void writeSheet1(String tempOutFilePath) throws Exception {
         //  xl/worksheets/sheet1.xml
+        //  写入表头信息
         FileUtils.writeStringToFile(tempOutFilePath + "xl/worksheets/sheet1.xml", writer -> {
             writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><worksheet xmlns=\"http://schemas.openxmlformats"
                 + ".org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats"
@@ -59,8 +72,9 @@ public class Task3_01_WriteXlsx {
                 + ".0\"/>");
             writer.append("<sheetData>");
 
-            // 行号
             // 写入头数据
+            // TODO 写入标题头 数据
+
             writer.append(buildRow(0, "string", "date", "integer"));
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,6 +83,7 @@ public class Task3_01_WriteXlsx {
                 writer.append(buildRow(i, "标题" + i, simpleDateFormat.parse("2022-01-" + i), i));
             }
 
+            // 写入尾部信息
             writer.append("</sheetData>");
             writer.append(
                 "<phoneticPr fontId=\"1\" type=\"noConversion\"/><pageMargins left=\"0.7\" right=\"0.7\" top=\"0.75\""
