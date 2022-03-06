@@ -92,14 +92,6 @@ public class Task3_01_WriteXlsx {
             // 数字： c 标签 不要额外的 参数
             // 接下来依次类推 拼接 第二行 第三行的数据，当然 我们这里最好要使用for循环去处理
 
-            writer.append(buildRow(0, "string", "date", "integer"));
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            // 写入1-10行数据
-            for (int i = 1; i <= 10; i++) {
-                writer.append(buildRow(i, "标题" + i, simpleDateFormat.parse("2022-01-" + i), i));
-            }
-
             // 写入尾部信息
             writer.append("</sheetData>");
             writer.append(
@@ -107,52 +99,6 @@ public class Task3_01_WriteXlsx {
                     + " bottom=\"0.75\" header=\"0.3\" footer=\"0.3\"/><pageSetup paperSize=\"9\" "
                     + "orientation=\"portrait\" horizontalDpi=\"0\" verticalDpi=\"0\"/></worksheet>");
         });
-    }
-
-    private String buildRow(int rowIndex, Object... objs) {
-        StringBuilder row = new StringBuilder();
-        row.append("<row r=\"").append(rowIndex + 1).append("\">");
-
-        // 列号
-        int columnIndex = 0;
-        for (Object obj : objs) {
-            row.append(buildCell(rowIndex, columnIndex++, obj));
-        }
-
-        row.append("</row>");
-        return row.toString();
-    }
-
-    private String buildCell(int rowIndex, int column, Object data) {
-        StringBuilder cell = new StringBuilder();
-        cell.append("<c r=\"").append(PositionUtils.position(rowIndex, column)).append("\" ");
-
-        if (data == null) {
-            cell.append("></c>");
-            return cell.toString();
-        }
-        Class<?> clazz = data.getClass();
-        if (clazz == String.class) {
-            // string 2种情况
-            // 1. <c r="A1" t="s"> 这种情况下 v标签只放索引， 具体值在sharedStrings.xml
-            // 2. <c r="A1" t="str"> 这中情况下值 直接放在v标签下面
-            // 为了简单 我们直接用第二种
-            cell.append("t=\"str\"><v>");
-            cell.append(data);
-        } else if (clazz == Date.class) {
-            // 日期  <c r="A2" s="1">
-            // s="1" 代表设置为1号样式 在style.xml 写了1是日期格式
-            cell.append("s=\"1\"><v>");
-            cell.append(DateUtils.convertToExcelDate((Date)data));
-        } else if (clazz == Integer.class) {
-            // 数字 <c r="A3">
-            cell.append("><v>");
-            cell.append(data);
-        } else {
-            throw new IllegalArgumentException("当前还不支持字段类型" + clazz);
-        }
-        cell.append("</v></c>");
-        return cell.toString();
     }
 
     private void writeBase(String tempOutFilePath) throws Exception {

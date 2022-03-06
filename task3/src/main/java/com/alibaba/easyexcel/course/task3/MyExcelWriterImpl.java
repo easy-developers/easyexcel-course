@@ -84,10 +84,6 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
         // TODO 读取 fieldList的数据 写入头数数据
         // 需要写入的为：<row r="1"><c r="A1" t="str"><v>string</v></c><c r="B1" t="str"><v>date</v></c><c r="C1"
         // t="str"><v>integer</v></c></row>
-        // 写入头数据
-        sheet1Writer.append(buildRow(fieldList.stream()
-            .map(Field::getName)
-            .collect(Collectors.toList())));
     }
 
     /**
@@ -103,53 +99,6 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
                 + " bottom=\"0.75\" header=\"0.3\" footer=\"0.3\"/><pageSetup paperSize=\"9\" "
                 + "orientation=\"portrait\" horizontalDpi=\"0\" verticalDpi=\"0\"/></worksheet>");
         sheet1Writer.close();
-    }
-
-    private String buildRow(List<?> objs) {
-        StringBuilder row = new StringBuilder();
-        row.append("<row r=\"").append(rowIndex + 1).append("\">");
-
-        // 列号
-        int columnIndex = 0;
-        for (Object obj : objs) {
-            row.append(buildCell(columnIndex++, obj));
-        }
-
-        row.append("</row>");
-        rowIndex++;
-        return row.toString();
-    }
-
-    private String buildCell(int column, Object data) {
-        StringBuilder cell = new StringBuilder();
-        cell.append("<c r=\"").append(PositionUtils.position(rowIndex, column)).append("\" ");
-
-        if (data == null) {
-            cell.append("></c>");
-            return cell.toString();
-        }
-        Class<?> clazz = data.getClass();
-        if (clazz == String.class) {
-            // string 2种情况
-            // 1. <c r="A1" t="s"> 这种情况下 v标签只放索引， 具体值在sharedStrings.xml
-            // 2. <c r="A1" t="str"> 这中情况下值 直接放在v标签下面
-            // 为了简单 我们直接用第二种
-            cell.append("t=\"str\"><v>");
-            cell.append(data);
-        } else if (clazz == Date.class) {
-            // 日期  <c r="A2" s="1">
-            // s="1" 代表设置为1号样式 在style.xml 写了1是日期格式
-            cell.append("s=\"1\"><v>");
-            cell.append(DateUtils.convertToExcelDate((Date)data));
-        } else if (clazz == Integer.class) {
-            // 数字 <c r="A3">
-            cell.append("><v>");
-            cell.append(data);
-        } else {
-            throw new IllegalArgumentException("当前还不支持字段类型" + clazz);
-        }
-        cell.append("</v></c>");
-        return cell.toString();
     }
 
     private void writeBase() throws Exception {
@@ -250,18 +199,6 @@ public class MyExcelWriterImpl<T> implements MyExcelWriter<T> {
         // .0</v></c><c r="C2" ><v>1</v></c></row>
         // 这里要注意 需要支持写入无数航
         // 将数据写入到 sheet1Writer.append
-
-        if (dataList == null || dataList.isEmpty()) {
-            return;
-        }
-        for (T data : dataList) {
-            // 创建一个cglib对象
-            BeanMap beanMap = BeanMap.create(data);
-            // 将数据放入对象
-            sheet1Writer.append(buildRow(fieldList.stream()
-                .map(field -> beanMap.get(field.getName()))
-                .collect(Collectors.toList())));
-        }
     }
 
     @Override

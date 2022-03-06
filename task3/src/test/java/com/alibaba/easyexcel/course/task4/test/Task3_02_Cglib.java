@@ -58,17 +58,6 @@ public class Task3_02_Cglib {
         // 最后输出的日志 如下
         //  log.info("成员变量:{}的值为:{}", ,);
 
-        // 拿到对应的class
-        Class<?> clazz = obj.getClass();
-        // 拿到所有的属性
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            // 生成get方法
-            String method = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            Object data = clazz.getMethod(method).invoke(obj, null);
-            log.info("成员变量:{}的值为:{}", field.getName(), data);
-        }
     }
 
     /**
@@ -107,10 +96,6 @@ public class Task3_02_Cglib {
         //  BeanMap.create 可以创建一个 Map<成员变量的名字,成员变量的值>
         // 根据 map.get(key) 拿到成员变量的值
         //  log.info("成员变量:{}的值为:{}", ,);
-        BeanMap beanMap = BeanMap.create(obj);
-        for (Object key : beanMap.keySet()) {
-            log.info("成员变量:{}的值为:{}", key, beanMap.get(key));
-        }
     }
 
     /**
@@ -137,16 +122,6 @@ public class Task3_02_Cglib {
             // TODO 反射读取对象中的值
             // 这里别调用reflectPrintData 不然不会输出一堆对象
             // 需要调用 clazz.getMethod(method).invoke(demo, null);方法 拿值 可以不输出
-            // 拿到对应的class
-            Class<?> clazz = demo.getClass();
-            // 拿到所有的属性
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                String fieldName = field.getName();
-                // 生成get方法
-                String method = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-                clazz.getMethod(method).invoke(demo, null);
-            }
         }
         log.info("反射耗时：{}", System.currentTimeMillis() - start);
 
@@ -161,10 +136,6 @@ public class Task3_02_Cglib {
             // TODO Cglib读取对象中的值
             // 这里别调用cglibPrintData 不然不会输出一堆对象
             // 需要调用  beanMap.get(key);方法 拿值 可以不输出
-            BeanMap beanMap = BeanMap.create(demo);
-            for (Object key : beanMap.keySet()) {
-                beanMap.get(key);
-            }
         }
         log.info("cglib耗时：{}", System.currentTimeMillis() - start);
     }

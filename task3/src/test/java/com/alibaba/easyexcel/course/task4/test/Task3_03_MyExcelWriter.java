@@ -80,30 +80,6 @@ public class Task3_03_MyExcelWriter {
         // TODO
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 直接抛异常
-
-        // 最大行数
-        int maxColumn = 10 * 10000;
-        int logLine = maxColumn / 10;
-
-        long start = System.currentTimeMillis();
-
-        String fileName = FileUtils.getPath() + "write/large" + System.currentTimeMillis() + ".xlsx";
-        new File(fileName).getParentFile().mkdirs();
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Sheet1");
-        for (int i = 0; i < maxColumn; i++) {
-            XSSFRow row = sheet.createRow(i);
-            for (int j = 0; j < 25; j++) {
-                XSSFCell cell = row.createCell(j);
-                cell.setCellValue("字符串" + i + "_" + j);
-            }
-            if (i % logLine == 0) {
-                log.info("第{}行输出完成", i);
-            }
-        }
-        workbook.write(new FileOutputStream(fileName));
-        workbook.close();
-        log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
     }
 
     /**
@@ -122,32 +98,6 @@ public class Task3_03_MyExcelWriter {
         // TODO
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 正常运行 耗时几乎不变
-
-        // 最大行数
-        int maxColumn = 10 * 10000;
-        int logLine = maxColumn / 10;
-
-        long start = System.currentTimeMillis();
-
-        String fileName = FileUtils.getPath() + "write/large" + System.currentTimeMillis() + ".xlsx";
-        new File(fileName).getParentFile().mkdirs();
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet("Sheet1");
-        for (int i = 0; i < maxColumn; i++) {
-            SXSSFRow row = sheet.createRow(i);
-            for (int j = 0; j < 25; j++) {
-                SXSSFCell cell = row.createCell(j);
-                cell.setCellValue("字符串" + j + "_" + i);
-            }
-            if (i % logLine == 0) {
-                log.info("第{}行输出完成", i);
-            }
-        }
-        workbook.write(new FileOutputStream(fileName));
-        // SXSSF 模式 需要额外调用dispose
-        workbook.dispose();
-        workbook.close();
-        log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
     }
 
     /**
@@ -167,29 +117,6 @@ public class Task3_03_MyExcelWriter {
         // 1. 将最大行数设置为10W行 运行 并记录时间
         // 2. 设置最大运行内存为128M  -Xmx128M 正常运行 耗时几乎不变
         // 3. 用128M 导出100W 数据
-
-        // 最大行数
-        int maxColumn = 10 * 10000;
-        int logLine = maxColumn / 10;
-
-        long start = System.currentTimeMillis();
-        String fileName = FileUtils.getPath() + "write/large" + System.currentTimeMillis() + ".xlsx";
-
-        // 用tray with resource 自动关闭 MyExcelWriter
-        try (MyExcelWriter<LargeData> myExcelWriter = new MyExcelWriterImpl<>(fileName, LargeData.class)) {
-
-            for (int i = 0; i < maxColumn; i++) {
-                LargeData largeData = largeData(i);
-                List<LargeData> list = new ArrayList<>();
-                list.add(largeData);
-                // 写入到excel
-                myExcelWriter.write(list);
-                if (i % logLine == 0) {
-                    log.info("第{}行输出完成", i);
-                }
-            }
-        }
-        log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
     }
 
     private LargeData largeData(int row) {

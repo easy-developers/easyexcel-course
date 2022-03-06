@@ -71,17 +71,7 @@ public class Task4_01_ReadXlsx {
         // 类似于上面的结构 要解析成这样子的一个数组 ["string","date"]
         // TODO 用 dom4j 解析 xl/sharedStrings.xml
         //不会使用dom4j的同学 可以 搜索： dom4j 解析xml
-        SAXReader reader = new SAXReader();
-        File file = new File(sharedStringsFile);
-        Document document = reader.read(file);
-        // sst
-        Element sst = document.getRootElement();
-        // sst -> si
-        List<Element> siList = sst.elements("si");
-        for (Element si : siList) {
-            // sst -> si -> t
-            sharedStringList.add(si.element("t").getText());
-        }
+
         return sharedStringList;
     }
 
@@ -102,35 +92,6 @@ public class Task4_01_ReadXlsx {
         // TODO 用 dom4j 解析xl/worksheets/sheet1.xml 并输出
         // 不会 同学可以打开： 解压缩的 xl/worksheets/sheet1.xml   并格式化一下的内容
         String sheet1File = tempOutFilePath + "xl/worksheets/sheet1.xml";
-        SAXReader reader = new SAXReader();
-        File file = new File(sheet1File);
-        Document document = reader.read(file);
-        // worksheet
-        Element worksheet = document.getRootElement();
-        // worksheet -> sheetData
-        Element sheetData = worksheet.element("sheetData");
-        // worksheet -> sheetData -> row
-        List<Element> rowList = sheetData.elements("row");
-        for (int i = 0; i < rowList.size(); i++) {
-            Element row = rowList.get(i);
-            //worksheet -> sheetData -> row -> c
-            List<Element> cList = row.elements("c");
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("第").append(i).append("行数据为：");
-            for (Element c : cList) {
-                //  单元格存储的值 这里有2个情况： 1. 直接就是数据 2. 只是一个坐标具体数据需要去sharedStringList读取
-                String value = c.element("v").getText();
-                // c这个节点 上面 t的属性值
-                String tAttributeValue = c.attributeValue("t");
-                if ("s".equals(tAttributeValue)) {
-                    stringBuilder.append(sharedStringList.get(Integer.parseInt(value)))
-                        .append(",");
-                } else {
-                    stringBuilder.append(value)
-                        .append(",");
-                }
-            }
-            log.info(stringBuilder.toString());
-        }
+
     }
 }

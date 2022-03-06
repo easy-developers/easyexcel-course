@@ -79,17 +79,7 @@ public class MyExcelReaderImpl<T> implements MyExcelReader<T> {
         // 类似于上面的结构 要解析成这样子的一个数组 ["string","date"]
         // TODO 用 dom4j 解析 xl/sharedStrings.xml
         //不会使用dom4j的同学 可以 搜索： dom4j 解析xml
-        SAXReader reader = new SAXReader();
-        File file = new File(sharedStringsFile);
-        Document document = reader.read(file);
-        // sst
-        Element sst = document.getRootElement();
-        // sst -> si
-        List<Element> siList = sst.elements("si");
-        for (Element si : siList) {
-            // sst -> si -> t
-            sharedStringList.add(si.element("t").getText());
-        }
+
         return sharedStringList;
     }
 
@@ -116,81 +106,7 @@ public class MyExcelReaderImpl<T> implements MyExcelReader<T> {
         // 默认数据到达100条以后 ，回调：consumer.accept 给用户去处理数据，防止内存存储太多数据
 
         String sheet1File = tempOutFilePath + "xl/worksheets/sheet1.xml";
-        SAXReader reader = new SAXReader();
-        File file = new File(sheet1File);
-        Document document = reader.read(file);
-        // worksheet
-        Element worksheet = document.getRootElement();
-        // worksheet -> sheetData
-        Element sheetData = worksheet.element("sheetData");
-        // worksheet -> sheetData -> row
-        List<Element> rowList = sheetData.elements("row");
-        // 存储所有数据
-        List<T> dataList = new ArrayList<>();
-        for (int i = 0; i < rowList.size(); i++) {
-            if (i == 0) {
-                log.info("第一条为数据头，忽略");
-                continue;
-            }
-            Element row = rowList.get(i);
-            //worksheet -> sheetData -> row -> c
-            List<Element> cList = row.elements("c");
 
-            // 创建一个实例对象
-            T data = clazz.newInstance();
-            dataList.add(data);
-            BeanMap beanMap = BeanMap.create(data);
-            int column = 0;
-            for (Element c : cList) {
-                // 这列数据 已经超过我们对象了 后面的数据 直接忽略
-                if (column >= fieldList.size()) {
-                    break;
-                }
-                // 拿到当前列的 对应实体对象的属性
-                Field field = fieldList.get(column);
-
-                //  单元格存储的值 这里有2个情况： 1. 直接就是数据 2. 只是一个坐标具体数据需要去sharedStringList读取
-                String value = c.element("v").getText();
-                // c这个节点 上面 t的属性值
-                String tAttributeValue = c.attributeValue("t");
-
-                String dataValue;
-                if ("s".equals(tAttributeValue)) {
-                    dataValue = sharedStringList.get(Integer.parseInt(value));
-                } else {
-                    dataValue = value;
-                }
-
-                // 转换数据
-                Object convertedValue = doConvert(dataValue, field);
-
-                beanMap.put(field.getName(), convertedValue);
-                column++;
-            }
-            // 每隔100条 回调异常 防止数据都在内存
-            if (dataList.size() % 100 == 0) {
-                consumer.accept(dataList);
-                dataList = new ArrayList<>();
-            }
-        }
-
-        // 可能最后还有一些数据回调
-        consumer.accept(dataList);
     }
 
-    private Object doConvert(String value, Field field) {
-        if (value == null) {
-            return null;
-        }
-        Class<?> fieldType = field.getType();
-        if (fieldType == String.class) {
-            return value;
-        } else if (fieldType == Date.class) {
-            return DateUtils.convertToJavaDate(value);
-        } else if (fieldType == Integer.class) {
-            return Integer.valueOf(value);
-        } else {
-            throw new IllegalArgumentException("当前还不支持字段类型" + field.getType());
-        }
-    }
 }

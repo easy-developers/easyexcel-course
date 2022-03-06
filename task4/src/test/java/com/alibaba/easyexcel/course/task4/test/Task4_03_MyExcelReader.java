@@ -76,58 +76,6 @@ public class Task4_03_MyExcelReader {
         // 2. 设置最大运行内存为128M -Xmx128M 直接报错
 
         // 复制写的代码过来
-        // 最大行数
-        int maxColumn = 10 * 10000;
-        int logLine = maxColumn / 10;
-
-        long start = System.currentTimeMillis();
-
-        String fileName = FileUtils.getPath() + "read/large" + System.currentTimeMillis() + ".xlsx";
-        new File(fileName).getParentFile().mkdirs();
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet("Sheet1");
-        for (int i = 0; i < maxColumn; i++) {
-            SXSSFRow row = sheet.createRow(i);
-            for (int j = 0; j < 25; j++) {
-                SXSSFCell cell = row.createCell(j);
-                cell.setCellValue("字符串" + j + "_" + i);
-            }
-            if (i % logLine == 0) {
-                log.info("第{}行输出完成", i);
-            }
-        }
-        workbook.write(new FileOutputStream(fileName));
-        // SXSSF 模式 需要额外调用dispose
-        workbook.dispose();
-        workbook.close();
-        log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
-
-        //  读取excel poi读 xlsx 读值有XSSF一个模式
-        start = System.currentTimeMillis();
-        XSSFWorkbook readWorkbook = new XSSFWorkbook(fileName);
-        XSSFSheet readSheet = readWorkbook.getSheetAt(0);
-        int lastRowNum = readSheet.getLastRowNum();
-
-        // 临时存放数据 模拟存储数据库
-        List<List<String>> tempData = new ArrayList<>();
-        for (int i = 0; i <= lastRowNum; i++) {
-            XSSFRow row = readSheet.getRow(i);
-            List<String> rowData = new ArrayList<>();
-            tempData.add(rowData);
-            int lastCellNum = row.getLastCellNum();
-            for (int j = 0; j < lastCellNum; j++) {
-                rowData.add(row.getCell(j).getStringCellValue());
-            }
-            if (i % logLine == 0) {
-                log.info("第{}行读取完成,数据为{}", i, JSON.toJSONString(rowData));
-            }
-            // 模拟每隔100条 存储数据库
-            if (i % 100 == 0) {
-                tempData = new ArrayList<>();
-            }
-        }
-
-        log.info("完成文件读取,耗时:{}", System.currentTimeMillis() - start);
 
     }
 
@@ -149,42 +97,6 @@ public class Task4_03_MyExcelReader {
         // 3. 修改行数为100W 查看结果
 
         // 复制写的代码过来
-        // 最大行数
-        int maxColumn = 10 * 10000;
-        int logLine = maxColumn / 10;
-
-        long start = System.currentTimeMillis();
-        String fileName = FileUtils.getPath() + "reade/large" + System.currentTimeMillis() + ".xlsx";
-        new File(fileName).getParentFile().mkdirs();
-
-        // 用tray with resource 自动关闭 MyExcelWriter
-        try (MyExcelWriter<LargeData> myExcelWriter = new MyExcelWriterImpl<>(fileName, LargeData.class)) {
-            for (int i = 0; i < maxColumn; i++) {
-                LargeData largeData = largeData(i);
-                List<LargeData> list = new ArrayList<>();
-                list.add(largeData);
-                // 写入到excel
-                myExcelWriter.write(list);
-                if (i % logLine == 0) {
-                    log.info("第{}行输出完成", i);
-                }
-            }
-        }
-        log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
-
-        // 读excel
-        start = System.currentTimeMillis();
-        MyExcelReader<LargeData> myExcelReader = new MyExcelReaderImpl<>();
-        AtomicInteger count = new AtomicInteger();
-        myExcelReader.read(fileName, LargeData.class, list -> {
-            for (LargeData largeData : list) {
-                count.incrementAndGet();
-                if (count.get() % logLine == 0) {
-                    log.info("第{}行输出完成,数据为{}", count.get(), JSON.toJSONString(largeData));
-                }
-            }
-        });
-        log.info("完成文件读取,耗时:{}", System.currentTimeMillis() - start);
     }
 
     /**
@@ -206,42 +118,6 @@ public class Task4_03_MyExcelReader {
         // 3. 用128M 内存导出并读取100W数据
 
         // 复制写的代码过来
-        // 最大行数
-        int maxColumn = 10 * 10000;
-        int logLine = maxColumn / 10;
-
-        long start = System.currentTimeMillis();
-        String fileName = FileUtils.getPath() + "reade/large" + System.currentTimeMillis() + ".xlsx";
-        new File(fileName).getParentFile().mkdirs();
-
-        // 用tray with resource 自动关闭 MyExcelWriter
-        try (MyExcelWriter<LargeData> myExcelWriter = new MyExcelWriterImpl<>(fileName, LargeData.class)) {
-            for (int i = 0; i < maxColumn; i++) {
-                LargeData largeData = largeData(i);
-                List<LargeData> list = new ArrayList<>();
-                list.add(largeData);
-                // 写入到excel
-                myExcelWriter.write(list);
-                if (i % logLine == 0) {
-                    log.info("第{}行输出完成", i);
-                }
-            }
-        }
-        log.info("完成文件输出,耗时:{}", System.currentTimeMillis() - start);
-
-        // 读excel
-        start = System.currentTimeMillis();
-        MyExcelReader<LargeData> myExcelReader = new MyExcelReaderSaxImpl<>();
-        AtomicInteger count = new AtomicInteger();
-        myExcelReader.read(fileName, LargeData.class, list -> {
-            for (LargeData largeData : list) {
-                count.incrementAndGet();
-                if (count.get() % logLine == 0) {
-                    log.info("第{}行输出完成,数据为{}", count.get(), JSON.toJSONString(largeData));
-                }
-            }
-        });
-        log.info("完成文件读取,耗时:{}", System.currentTimeMillis() - start);
     }
 
     private LargeData largeData(int row) {
