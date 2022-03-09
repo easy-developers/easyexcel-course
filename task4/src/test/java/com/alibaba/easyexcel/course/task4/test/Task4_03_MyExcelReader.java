@@ -36,9 +36,9 @@ import org.junit.Test;
 public class Task4_03_MyExcelReader {
 
     /**
-     * ●基于前面的代码手写一个MyExcelReader工具类
+     * 基于前面的代码手写一个MyExcelReader工具类
      * 任务说明：
-     * 我已经会了如果读取一个xlsx以，结合前面写的时候需要用一个对象去写，来完成一个我们自己的excel读取的工具类：MyExcelReader
+     * 我们已经会了如果读取一个xlsx以，结合前面写的时候需要用一个对象去写，来完成一个我们自己的excel读取的工具类：MyExcelReader
      * 需要完成：
      * 1. MyExcelReaderImpl.readSharedStrings 读取readSharedStrings
      * 2. MyExcelReaderImpl.readSheet1 读取sheet 并回调给 consumer
@@ -86,7 +86,7 @@ public class Task4_03_MyExcelReader {
      * 需要完成：
      * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时, 然后读取这个数据
      * 2. 设置运行内存为128M -Xmx128M  再次运行
-     * 3. 用128M 内存导出100W数据
+     * 3. 用128M 内存导出100W数据  会抛出异常
      *
      * @throws Exception
      */
@@ -105,9 +105,9 @@ public class Task4_03_MyExcelReader {
      * 由于dom4j读取sheet1.xml 还是在内存里面，在遇到100W量级的数据还是会OOM，这个时候我们需要引入：SAXParserFactory 这个会一行一行的读取 xml中的数据
      * 需要完成：
      * 1. 由于sax读取相对比较复杂，所以不再让大家书写了。请阅读 并理解 MyExcelReaderSaxImpl 的代码
-     * 1. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时, 然后读取这个数据
-     * 2. 设置运行内存为128M -Xmx128M  再次运行
-     * 3. 用128M 内存导出并读取100W数据
+     * 2. 写入10W行25列数据，每一个单元格的数据格式为： 字符串_(行号)_(列号) 并记录耗时, 然后读取这个数据
+     * 3. 设置运行内存为128M -Xmx128M  再次运行
+     * 4. 用128M 内存导出并读取100W数据
      *
      * @throws Exception
      */
