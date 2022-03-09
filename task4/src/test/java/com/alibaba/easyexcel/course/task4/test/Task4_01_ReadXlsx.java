@@ -23,8 +23,8 @@ public class Task4_01_ReadXlsx {
     /**
      * 手写xlsx文件解析代码
      * 任务说明：我们要读xlsx实际上只要读取2个文件，sharedStrings.xml 和  sheet1.xml。
-     * sheet1.xml 用于存储
-     * sharedStrings.xml  用于 存储 在
+     * sheet1.xml 用于存储表格信息
+     * sharedStrings.xml 用于存储在sheet1.xml仅仅存了下标，而不是字符串的数据
      *
      * 需要完成：
      * 1. 完成readSharedStrings方法
